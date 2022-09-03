@@ -1,26 +1,7 @@
 import heapq
+import sys
 
-input = sys.stdin.readline()
 INF = int(1e9) # 무한 의미
-
-# 노드 개수, 간선 개수
-n,m = map(int, input().split())
-
-# 출발 노드
-start = int(input())
-
-# 각 노드에 연결된 노드정보를 담는 리스트 만들기
-graph = [[] for i in range(n+1)]
-
-
-# 최단거리 정보저장 : 처음은 무
-distance = [INF]*(n+1)
-
-for _ in range(m):
-    a,b,c = map(int, input().split())
-
-    # a번 노드에서 b번 노드로 가는 비용이 c
-    graph[a].append((b,c))
 
 def dijkstra(start):
 
@@ -52,10 +33,39 @@ def dijkstra(start):
                 # 갱신된 값이 있을때만 큐에 넣어줌 : 그래야 거리가 가장 짧은걸 다음 노드로 선정해서 계속해서 값을 갱신해나갈수있기때문에..!
                 heapq.heappush(q, (cost, i[0])) 
             
+
+# input = sys.stdin.readline()
+
+# 노드 개수, 간선 개수
+n,m = map(int, input().split())
+
+# 출발 노드
+start = int(input())
+
+# 각 노드에 연결된 노드정보를 담는 리스트 만들기
+graph = [[] for i in range(n+1)]
+
+# 최단거리 정보저장 : 처음은 무
+distance = [INF]*(n+1)
+
+# 도달할 수 있는 노드의 개수 : 이게 최대인 것이, 가장 멀리 전보가 간다는 뜻
+count = 0
+
+# 도달 가능한 노드 중, 가장 멀리있는 노드와 최단거리
+max_distance = 0
+
+for _ in range(m):
+    a,b,c = map(int, input().split())
+
+    # a번 노드에서 b번 노드로 가는 [비용]이 c
+    graph[a].append((b,c))
+    
 dijkstra(start)
 
-for i in range(1, n+1):
-    if distance[i]==INF:
-        print('infinity')
-    else: # 각 i번노드까지 가는 최소경로가 출력
-        print(distance[i])
+for d in distance:
+    if d != INF:
+        count+=1 # 전보 가능한 노드개수
+        max_distance = max(d, max_distance) # 가장 멀리있는 도시확인 = 비용이 가장 큰 것 (distance배열)
+        
+
+print(count-1, max_distance) # 전보하는 도시개수 (전보시작점 제외), 가장 큰 비용 출력
